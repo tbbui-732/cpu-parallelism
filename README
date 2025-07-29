@@ -1,0 +1,5 @@
+# CPU Parallelism Performance Analysis
+
+## Challenge:
+1. Problem: sum the elements of a large array
+2. Compare a naive sum implementation with a multithreaded version
