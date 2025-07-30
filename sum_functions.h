@@ -6,8 +6,8 @@
 
 struct Sum {
     std::string_view file_path;
-    void sequential_sum() const;
-    void multithreaded_sum() const;
+    void SequentialSum() const;
+    void MultiThreadedSum() const;
 };
 
 #endif

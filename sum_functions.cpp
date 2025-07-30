@@ -3,11 +3,11 @@
 #include <string>
 #include <string_view>
 
-Sum::sequential_view() const {
+Sum::SequentialSum() const {
 
 }
 
-Sum::multithreaded_sum() const {
+Sum::MultiThreadedSum() const {
 
 }
 
