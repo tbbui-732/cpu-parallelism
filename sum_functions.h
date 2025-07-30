@@ -7,7 +7,7 @@
 struct Sum {
 
     /*
-     * Read-only string of the file containing the array to be summed
+     * Local path of file containing array to be summed
      */
     std::string_view file_path;
 
