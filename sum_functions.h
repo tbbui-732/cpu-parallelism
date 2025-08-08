@@ -3,23 +3,16 @@
 
 #include <string>
 #include <string_view>
+#include <vector>
 
-struct Sum {
-
-    /*
-     * Local path of file containing array to be summed
-     */
-    std::string_view file_path;
-
-    /*
-     * Stores content of @file_path in a std::string object
-     * Returns string content if SUCCESSFUL; otherwise an empty string ""
-     */
-    std::string _ReadFile() const;
-
-
-    void SequentialSum() const;
-    void MultiThreadedSum() const;
+class Sum {
+public:
+    void SequentialSum();
+    void MultiThreadedSum();
+//TODO: UNCOMMENT THIS ONCE DONE TESTING! 
+//private:
+    std::string ReadFile(const std::string& source);
+    std::vector<int> SourceToVec(const std::string& source);
 };
 
 #endif
