@@ -2,6 +2,7 @@
  * HEADER-ONLY FILE FOR TESTING!
  */
 
+#include <cassert>
 #include <cmath>
 #include <chrono>
 #include <random>
@@ -41,10 +42,7 @@ public:
         // [testing] convert file to array
         Sum sum;
         std::vector<int> arr = sum.SourceToVec(filename);
-        std::cout << "printing out source content";
-        for (int val : arr) {
-            std::cout << val << '\n';
-        }
+        assert(arr.size() == this->lines);
     }
 
 private:
