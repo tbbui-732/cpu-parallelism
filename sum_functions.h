@@ -7,12 +7,9 @@
 
 class Sum {
 public:
-    void SequentialSum();
-    void MultiThreadedSum();
-//TODO: UNCOMMENT THIS ONCE DONE TESTING! 
-//private:
-    std::string ReadFile(const std::string& source);
-    std::vector<int> SourceToVec(const std::string& source);
+    static int SequentialSum(const std::vector<int> values);
+    static int MultiThreadedSum(const std::vector<int> values);
+    static std::vector<int> SourceToVec(const std::string& source);
 };
 
 #endif
