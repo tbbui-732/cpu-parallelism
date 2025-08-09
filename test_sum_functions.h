@@ -1,6 +1,9 @@
 /*
- * HEADER-ONLY FILE FOR TESTING!
+ * HEADER-ONLY TESTING FILE
  */
+
+#ifndef TEST_SUM_FUNCTIONS_H
+#define TEST_SUM_FUNCTIONS_H
 
 #include <cassert>
 #include <cmath>
@@ -11,48 +14,18 @@
 #include <string>
 
 #include "sum_functions.h"
+#include "utils.h"
 
 class Test {
 public:
-    unsigned int seed;
-    unsigned int wrap;
-    size_t lines;
-    std::string filename;
-
-    Test() {
-        this->seed      = std::chrono::system_clock::now()
-                            .time_since_epoch()
-                            .count();
-        this->wrap      = static_cast<int>(std::pow(2, 15));
-        this->lines     = static_cast<size_t>(std::pow(2, 10));
-        this->filename  = "test/arr.txt";
-    }
-
-    inline void TestSourceToVec() {
-        // create a file containing randomized values
-        std::ofstream outfile(filename);
-        if (!outfile.is_open()) {
-            std::cout << "unable to open '" << filename << "'\n";
-            return;
-        }
-        std::string content = GenerateContent();
-        outfile.write(content.c_str(), content.size());
-        outfile.close();
-
-        // [testing] convert file to array
+    /*
+     * @brief tests converting file content into a vector
+     */
+    static inline void SourceToVec() {
         Sum sum;
-        std::vector<int> arr = sum.SourceToVec(filename);
-        assert(arr.size() == this->lines);
-    }
-
-private:
-    inline std::string GenerateContent() {
-        std::minstd_rand0 rand(seed);
-        std::string content;
-        for (size_t i{0}; i < lines; ++i) {
-            auto num = rand() % wrap;
-            content += std::to_string(num) + '\n';
-        }
-        return content;
+        std::vector<int> arr = sum.SourceToVec(filepath);
+        assert(arr.size() == Utils::GetLines());
     }
 };
+
+#endif
