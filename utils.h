@@ -17,7 +17,7 @@ public:
                       .time_since_epoch()
                       .count();
         wrap      = static_cast<int>(std::pow(2, 15));
-        lines     = static_cast<size_t>(std::pow(2, 10));
+        lines     = static_cast<size_t>(std::pow(2, 22)); // over 4mil
         filepath  = "test/arr.txt";
         GenerateContent();
     }
