@@ -3,3 +3,11 @@
 ## Challenge:
 1. Problem: sum the elements of a large array
 2. Compare a naive sum implementation with a multithreaded version
+
+## To be explored:
+- Loop Unrolling:           multiple elements per iteration
+- SIMD Vectorization:       CPU vector instructions            
+- Parallel Reduction:       sum and combine results    
+- Kahan Summation:          floating-point error            
+- Cache Optimization:       access and prefetching      
+- Specialized Libraries:    optimized BLAS / math libraries    
