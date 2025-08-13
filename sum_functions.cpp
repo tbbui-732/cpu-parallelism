@@ -32,7 +32,6 @@ int Sum::SequentialSum(const std::vector<int> values) {
     return result;
 }
 
-// TODO: currently working on this multithreading logic
 int Sum::MultiThreadedSum(
     const std::vector<int>& values,
     const size_t thread_count
@@ -63,7 +62,8 @@ int Sum::MultiThreadedSum(
     // run all threads
     for (auto& t : threads) t.join();
 
-    // TODO: naively combine results for now!
+    // TODO: naively combine results for now! is there a better way of doing
+    // this?
     int result = 0;
     for (const int val : thread_results) {
         result += val;
