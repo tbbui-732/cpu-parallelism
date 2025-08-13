@@ -5,11 +5,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-unsigned int seed;
-unsigned int wrap;
-size_t lines;
-std::string filepath;
-
 class Utils {
 public:
     static inline void Setup() {
@@ -42,8 +37,15 @@ private:
      * @brief generates a list of random numbers and stores them at
      * a specified file path
      */
+    static inline unsigned int seed;
+    static inline unsigned int wrap;
+    static inline size_t lines;
+    static inline std::string filepath;
+
     static inline void GenerateContent() {
         std::minstd_rand0 rand(seed);
+
+        /* TODO: write content diredctly instead of storing in std::string */
         std::string content;
         for (size_t i{0}; i < lines; ++i) {
             auto num = rand() % wrap;
@@ -57,7 +59,6 @@ private:
         outfile.write(content.c_str(), content.size());
         outfile.close();
     }
-
 };
 
 #endif
