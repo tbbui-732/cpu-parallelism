@@ -8,30 +8,19 @@
 class Utils {
 public:
     static inline void Setup() {
-        seed      = std::chrono::system_clock::now()
-                      .time_since_epoch()
-                      .count();
-        wrap      = static_cast<int>(std::pow(2, 15));
-        lines     = static_cast<size_t>(std::pow(2, 22)); // over 4mil
-        filepath  = "test/arr.txt";
+        seed = static_cast<unsigned int>(
+            std::chrono::system_clock::now().time_since_epoch().count()
+        );
+        wrap = 1u << 15;
+        lines = 1u << 22; // over 4mil
+        filepath = "test/arr.txt";
         GenerateContent();
     }
 
-    static inline unsigned int GetSeed() {
-        return seed;
-    }
-
-    static inline unsigned int GetWrap() {
-        return wrap;
-    }
-
-    static inline size_t GetLines() {
-        return lines;
-    }
-
-    static inline std::string GetFilePath() {
-        return filepath;
-    }
+    static inline unsigned int GetSeed() { return seed; }
+    static inline unsigned int GetWrap() { return wrap; }
+    static inline size_t GetLines() { return lines; }
+    static inline std::string GetFilePath() { return filepath; }
 private:
     /*
      * @brief generates a list of random numbers and stores them at
@@ -44,19 +33,14 @@ private:
 
     static inline void GenerateContent() {
         std::minstd_rand0 rand(seed);
-
-        /* TODO: write content diredctly instead of storing in std::string */
-        std::string content;
-        for (size_t i{0}; i < lines; ++i) {
-            auto num = rand() % wrap;
-            content += std::to_string(num) + '\n';
-        }
         std::ofstream outfile(filepath);
         if (!outfile.is_open()) {
             std::cout << "unable to open '" << filepath << "'\n";
             return;
         }
-        outfile.write(content.c_str(), content.size());
+        for (size_t i{0}; i < lines; ++i) {
+            outfile << rand() % wrap << '\n';
+        }
         outfile.close();
     }
 };
