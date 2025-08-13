@@ -65,9 +65,15 @@ int Sum::MultiThreadedSum(
 
     // TODO: tree-reduction for very large @thread_counts (?)
     // this might be overkill for <100 threads 
-    int result = 0;
-    for (const int val : thread_results) {
-        result += val;
+    constexpr unsigned int many_threads = 100; // arbitrary value
+    if (thread_count >= many_threads) {
+        // TODO: perform tree-reduction
+        return 0; // placeholder...
+    } else {
+        int result = 0;
+        for (const int val : thread_results) {
+            result += val;
+        }
     }
 
     return result;
