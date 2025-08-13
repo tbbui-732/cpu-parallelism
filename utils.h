@@ -8,30 +8,19 @@
 class Utils {
 public:
     static inline void Setup() {
-        seed      = std::chrono::system_clock::now()
-                      .time_since_epoch()
-                      .count();
-        wrap      = static_cast<int>(std::pow(2, 15));
-        lines     = static_cast<size_t>(std::pow(2, 22)); // over 4mil
-        filepath  = "test/arr.txt";
+        seed = static_cast<unsigned int>(
+            std::chrono::system_clock::now().time_since_epoch().count()
+        );
+        wrap = 1u << 15;
+        lines = 1u << 22; // over 4mil
+        filepath = "test/arr.txt";
         GenerateContent();
     }
 
-    static inline unsigned int GetSeed() {
-        return seed;
-    }
-
-    static inline unsigned int GetWrap() {
-        return wrap;
-    }
-
-    static inline size_t GetLines() {
-        return lines;
-    }
-
-    static inline std::string GetFilePath() {
-        return filepath;
-    }
+    static inline unsigned int GetSeed() { return seed; }
+    static inline unsigned int GetWrap() { return wrap; }
+    static inline size_t GetLines() { return lines; }
+    static inline std::string GetFilePath() { return filepath; }
 private:
     /*
      * @brief generates a list of random numbers and stores them at
