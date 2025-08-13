@@ -8,6 +8,7 @@
 #include <vector>
 #include <sstream>
 #include <thread>
+#include <numeric>
 
 std::vector<int> Sum::SourceToVec(const std::string& source) {
     std::vector<int> result;
@@ -37,8 +38,7 @@ int Sum::MultiThreadedSum(
     const size_t thread_count
 ) {
     const int width = values.size() / thread_count;
-    std::vector<int> thread_results;
-    thread_results.reserve(thread_count);
+    std::vector<int> thread_results(thread_count, 0);
 
     // range based lambda sum function that updates @thread_results
     auto ThreadSum = [&](size_t start, size_t end, size_t thread) -> void {
@@ -65,15 +65,13 @@ int Sum::MultiThreadedSum(
 
     // TODO: tree-reduction for very large @thread_counts (?)
     // this might be overkill for <100 threads 
+    int result;
     constexpr unsigned int many_threads = 100; // arbitrary value
     if (thread_count >= many_threads) {
         // TODO: perform tree-reduction
-        return 0; // placeholder...
+        result = 0;
     } else {
-        int result = 0;
-        for (const int val : thread_results) {
-            result += val;
-        }
+        result = std::accumulate(thread_results.begin(), thread_results.end(), 0);
     }
 
     return result;
