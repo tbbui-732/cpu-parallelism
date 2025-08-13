@@ -45,6 +45,8 @@ int Sum::MultiThreadedSum(
         int result = 0;
         for (size_t i = start; i < end; ++i)
             result += values[i];
+        // TODO: this is NOT a thread-safe operation! need to fix
+        // give each thread its own **index** to update
         thread_results.push_back(result);
     };
 
