@@ -13,17 +13,39 @@ int main() {
     std::vector<int> values = Sum::SourceToVec("test/arr.txt");
 
     /* testing */
-    std::cout << "test #1: SourceToVec - ";
     Test::SourceToVec();
-    std::cout << "passed\n";
-    std::cout << "\n";
 
     /* performance analysis */
-    int total = Sum::SequentialSum(values);
-    std::cout << "total (sequential) - " << total << '\n';
+    constexpr size_t num_threads = 5;
 
-    total = Sum::MultiThreadedSum(values);
-    std::cout << "total (multithreaded) - " << total << '\n';
+    auto t1 = std::chrono::high_resolution_clock::now();
+    int seqSumTotal = Sum::SequentialSum(values);
+    auto t2 = std::chrono::high_resolution_clock::now();
+    auto seqTime = t2 - t1;
+
+    t1 = std::chrono::high_resolution_clock::now();
+    int multThreadTotal = Sum::MultiThreadedSum(values, num_threads);
+    t2 = std::chrono::high_resolution_clock::now();
+    auto multTime = t2 - t1;
+
+    assert(seqSumTotal == multThreadTotal);
+
+    std::cout 
+        << "SequentialSum() took "
+        << std::chrono::duration_cast<std::chrono::milliseconds>(seqTime).count()
+        << " milliseconds\n";
+
+    std::cout 
+        << "MultiThreadedSum() took "
+        << std::chrono::duration_cast<std::chrono::milliseconds>(multTime).count()
+        << " milliseconds\n";
+
+    /*
+     * Uncomment to see values.
+     * NOTE: expect wrapping due to very large values
+    std::cout << "total (sequential) - " << seqSumTotal << '\n';
+    std::cout << "total (multithreaded) - " << multThreadTotal << '\n';
+    */
 
     return 0;
 }

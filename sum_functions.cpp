@@ -4,8 +4,10 @@
 #include <string>
 #include <string_view>
 #include <fstream>
+#include <functional>
 #include <vector>
 #include <sstream>
+#include <thread>
 
 std::vector<int> Sum::SourceToVec(const std::string& source) {
     std::vector<int> result;
@@ -22,7 +24,6 @@ std::vector<int> Sum::SourceToVec(const std::string& source) {
     return result;
 }
 
-// TODO: write this function, its header, and then test it
 int Sum::SequentialSum(const std::vector<int> values) {
     int result = 0;
     for (const int value : values) {
@@ -31,6 +32,42 @@ int Sum::SequentialSum(const std::vector<int> values) {
     return result;
 }
 
-int Sum::MultiThreadedSum(const std::vector<int> values) {
-    return 0;
+int Sum::MultiThreadedSum(
+    const std::vector<int>& values,
+    const size_t thread_count
+) {
+    const int width = values.size() / thread_count;
+    std::vector<int> thread_results;
+    thread_results.reserve(thread_count);
+
+    // range based lambda sum function that updates @thread_results
+    auto ThreadSum = [&](size_t start, size_t end, size_t thread) -> void {
+        int result = 0;
+        for (size_t i = start; i < end; ++i)
+            result += values[i];
+        thread_results.push_back(result);
+    };
+
+    // create @thread_count number of threads
+    std::vector<std::thread> threads;
+    threads.reserve(thread_count);
+
+    for (size_t thread = 0; thread < thread_count; ++thread) {
+        size_t start = width * thread;
+        size_t end = (thread == thread_count - 1) ?
+                        values.size() : (width * thread) + width;
+        threads.emplace_back(ThreadSum, start, end, thread);
+    }
+
+    // run all threads
+    for (auto& t : threads) t.join();
+
+    // TODO: naively combine results for now! is there a better way of doing
+    // this?
+    int result = 0;
+    for (const int val : thread_results) {
+        result += val;
+    }
+
+    return result;
 }
