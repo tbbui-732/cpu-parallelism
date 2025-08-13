@@ -23,7 +23,7 @@ public:
      */
     static inline void SourceToVec() {
         Sum sum;
-        std::vector<int> arr = sum.SourceToVec(filepath);
+        std::vector<int> arr = sum.SourceToVec(Utils::GetFilePath());
         assert(arr.size() == Utils::GetLines());
     }
 };

@@ -29,7 +29,7 @@ public:
         return lines;
     }
 
-    static inline std::string GetFilepath() {
+    static inline std::string GetFilePath() {
         return filepath;
     }
 private:
