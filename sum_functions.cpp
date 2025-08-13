@@ -63,16 +63,13 @@ int Sum::MultiThreadedSum(
     // run all threads
     for (auto& t : threads) t.join();
 
-    // TODO: tree-reduction for very large @thread_counts (?)
-    // this might be overkill for <100 threads 
     int result;
-    constexpr unsigned int many_threads = 100; // arbitrary value
-    if (thread_count >= many_threads) {
+    constexpr unsigned int MANY_THREADS = 100; // arbitrary value
+    if (thread_count >= MANY_THREADS)
         // TODO: perform tree-reduction
         result = 0;
-    } else {
+    else
         result = std::accumulate(thread_results.begin(), thread_results.end(), 0);
-    }
 
     return result;
 }
