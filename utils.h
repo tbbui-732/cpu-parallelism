@@ -44,19 +44,14 @@ private:
 
     static inline void GenerateContent() {
         std::minstd_rand0 rand(seed);
-
-        /* TODO: write content diredctly instead of storing in std::string */
-        std::string content;
-        for (size_t i{0}; i < lines; ++i) {
-            auto num = rand() % wrap;
-            content += std::to_string(num) + '\n';
-        }
         std::ofstream outfile(filepath);
         if (!outfile.is_open()) {
             std::cout << "unable to open '" << filepath << "'\n";
             return;
         }
-        outfile.write(content.c_str(), content.size());
+        for (size_t i{0}; i < lines; ++i) {
+            outfile << rand() % wrap << '\n';
+        }
         outfile.close();
     }
 };
