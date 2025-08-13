@@ -8,6 +8,7 @@
 #include <vector>
 #include <sstream>
 #include <thread>
+#include <numeric>
 
 std::vector<int> Sum::SourceToVec(const std::string& source) {
     std::vector<int> result;
@@ -37,15 +38,15 @@ int Sum::MultiThreadedSum(
     const size_t thread_count
 ) {
     const int width = values.size() / thread_count;
-    std::vector<int> thread_results;
-    thread_results.reserve(thread_count);
+    std::vector<int> thread_results(thread_count, 0);
 
     // range based lambda sum function that updates @thread_results
     auto ThreadSum = [&](size_t start, size_t end, size_t thread) -> void {
         int result = 0;
-        for (size_t i = start; i < end; ++i)
+        for (size_t i{start}; i < end; ++i)
             result += values[i];
-        thread_results.push_back(result);
+        // placing at a specific @thread ensures thread-safety
+        thread_results[thread] = result;
     };
 
     // create @thread_count number of threads
@@ -62,12 +63,13 @@ int Sum::MultiThreadedSum(
     // run all threads
     for (auto& t : threads) t.join();
 
-    // TODO: naively combine results for now! is there a better way of doing
-    // this?
-    int result = 0;
-    for (const int val : thread_results) {
-        result += val;
-    }
+    int result;
+    constexpr unsigned int MANY_THREADS = 100; // arbitrary value
+    if (thread_count >= MANY_THREADS)
+        // TODO: perform tree-reduction
+        result = 0;
+    else
+        result = std::accumulate(thread_results.begin(), thread_results.end(), 0);
 
     return result;
 }
