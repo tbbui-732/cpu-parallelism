@@ -59,7 +59,6 @@ int Sum::MultiThreadedSum(
                         values.size() : (width * thread) + width;
         threads.emplace_back(ThreadSum, start, end, thread);
     }
-    // TODO: helper function must be ran externally to this function
 
     // run all threads
     for (auto& t : threads) t.join();
