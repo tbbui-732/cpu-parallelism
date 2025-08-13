@@ -43,7 +43,7 @@ int Sum::MultiThreadedSum(
     // range based lambda sum function that updates @thread_results
     auto ThreadSum = [&](size_t start, size_t end, size_t thread) -> void {
         int result = 0;
-        for (size_t i = start; i < end; ++i)
+        for (size_t i{start}; i < end; ++i)
             result += values[i];
         // TODO: this is NOT a thread-safe operation! need to fix
         // give each thread its own **index** to update
@@ -64,8 +64,8 @@ int Sum::MultiThreadedSum(
     // run all threads
     for (auto& t : threads) t.join();
 
-    // TODO: naively combine results for now! is there a better way of doing
-    // this?
+    // TODO: tree-reduction for very large @thread_counts (?)
+    // this might be overkill for <100 threads 
     int result = 0;
     for (const int val : thread_results) {
         result += val;
