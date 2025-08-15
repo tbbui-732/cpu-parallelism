@@ -45,7 +45,7 @@ int Sum::MultiThreadedSum(
         int result = 0;
         for (size_t i{start}; i < end; ++i)
             result += values[i];
-        // placing at a specific @thread ensures thread-safety
+        // placing results at a specific @thread ensures thread-safety
         thread_results[thread] = result;
     };
 
@@ -60,16 +60,32 @@ int Sum::MultiThreadedSum(
         threads.emplace_back(ThreadSum, start, end, thread);
     }
 
-    // run all threads
-    for (auto& t : threads) t.join();
+    // TODO: TREE REDUCTION SHOULD START HERE!
+    auto TreeReduce = [&](const size_t thread) {
+        if (thread >= thread_count) {
+            // invalid branch
+            return ;
+        }
+    };
 
+    return 0;
+
+    /*
+    // run all threads
+    for (auto& t : threads) {
+        t.join();
+    }
+    */
+
+    /*
     int result;
     constexpr unsigned int MANY_THREADS = 100; // arbitrary value
     if (thread_count >= MANY_THREADS)
-        // TODO: perform tree-reduction
+        // TODO: ...
         result = 0;
     else
         result = std::accumulate(thread_results.begin(), thread_results.end(), 0);
 
     return result;
+    */
 }
