@@ -35,44 +35,55 @@ int Sum::SequentialSum(const std::vector<int> values) {
 
 int Sum::MultiThreadedSum(
     const std::vector<int>& values,
-    const size_t thread_count
+    const size_t num_threads
 ) {
-    const int width = values.size() / thread_count;
-    std::vector<int> thread_results(thread_count, 0);
+    const int width = values.size() / num_threads;
+    std::vector<int> thread_results(num_threads, 0);
 
     // range based lambda sum function that updates @thread_results
     auto ThreadSum = [&](size_t start, size_t end, size_t thread) -> void {
         int result = 0;
-        for (size_t i{start}; i < end; ++i)
+        for (size_t i{start}; i < end; ++i) {
             result += values[i];
+        }
         // placing results at a specific @thread ensures thread-safety
         thread_results[thread] = result;
     };
 
-    // create @thread_count number of threads
+    // create @num_threads number of threads
     std::vector<std::thread> threads;
-    threads.reserve(thread_count);
+    threads.reserve(num_threads);
 
-    for (size_t thread = 0; thread < thread_count; ++thread) {
+    for (size_t thread = 0; thread < num_threads; ++thread) {
         size_t start = width * thread;
-        size_t end = (thread == thread_count - 1) ?
-                        values.size() : (width * thread) + width;
+        size_t end = thread == (num_threads - 1) ?
+                     values.size() :
+                     width * thread + width;
         threads.emplace_back(ThreadSum, start, end, thread);
     }
 
-    // TODO: TREE REDUCTION SHOULD START HERE!
-    auto TreeReduce = [&](const size_t thread) {
-        size_t midpoint = thread_count % 2 == 0 ? 
-            thread_count / 2 : 
-            thread_count / 2 + 1;
-
+    // stores intermediate results of partially-merged threads
+    std::vector<int> partial_results(num_threads);
+    // TODO: rewrite this section!!! the logic is not logicking
+    auto TreeReduce = [&]() -> int {
+        size_t midpoint = num_threads % 2 == 0 ?
+                          num_threads / 2 :
+                          num_threads / 2 + 1;
         size_t offset = 1;
+        size_t thread = 0;
         while (offset <= midpoint) {
-            // combine the current thread with its offset
-            // NOTE: merge "self" if there is no corresponding neighbor
+            // merge current thread with its offset
+            int partial_result = threads[thread].join();
+            if ((thread + offset) <= num_threads) {
+                partial_result += threads[thread + offset].join();
+            }
+            partial_results[thread] = partial_result;
+
             // TODO: utilize some synchronization mechanism to prevent
             // future-merged threads from speeding through
+
             offset <<= 1;
+            ++thread;
         }
     };
 
@@ -88,7 +99,7 @@ int Sum::MultiThreadedSum(
     /*
     int result;
     constexpr unsigned int MANY_THREADS = 100; // arbitrary value
-    if (thread_count >= MANY_THREADS)
+    if (num_threads >= MANY_THREADS)
         // TODO: ...
         result = 0;
     else
