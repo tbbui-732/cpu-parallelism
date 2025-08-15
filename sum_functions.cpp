@@ -62,9 +62,17 @@ int Sum::MultiThreadedSum(
 
     // TODO: TREE REDUCTION SHOULD START HERE!
     auto TreeReduce = [&](const size_t thread) {
-        if (thread >= thread_count) {
-            // invalid branch
-            return ;
+        size_t midpoint = thread_count % 2 == 0 ? 
+            thread_count / 2 : 
+            thread_count / 2 + 1;
+
+        size_t offset = 1;
+        while (offset <= midpoint) {
+            // combine the current thread with its offset
+            // NOTE: merge "self" if there is no corresponding neighbor
+            // TODO: utilize some synchronization mechanism to prevent
+            // future-merged threads from speeding through
+            offset <<= 1;
         }
     };
 
