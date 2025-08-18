@@ -33,78 +33,24 @@ int Sum::SequentialSum(const std::vector<int> values) {
     return result;
 }
 
+/* TODO: rewrite this section using a tree-reduction algorithm */
 int Sum::MultiThreadedSum(
     const std::vector<int>& values,
     const size_t num_threads
 ) {
-    const int width = values.size() / num_threads;
-    std::vector<int> thread_results(num_threads, 0);
+    std::vector<int> partial(num_threads, 0);
+    // worker function
 
-    // range based lambda sum function that updates @thread_results
-    auto ThreadSum = [&](size_t start, size_t end, size_t thread) -> void {
-        int result = 0;
-        for (size_t i{start}; i < end; ++i) {
-            result += values[i];
-        }
-        // placing results at a specific @thread ensures thread-safety
-        thread_results[thread] = result;
-    };
-
-    // create @num_threads number of threads
+    // create threads
     std::vector<std::thread> threads;
     threads.reserve(num_threads);
-
-    for (size_t thread = 0; thread < num_threads; ++thread) {
-        size_t start = width * thread;
-        size_t end = thread == (num_threads - 1) ?
-                     values.size() :
-                     width * thread + width;
-        threads.emplace_back(ThreadSum, start, end, thread);
+    for (size_t thread_id{0}; thread_id < num_threads; ++thread_id) {
+        threads.emplace_back(worker, thread_id);
+    }
+    for (auto& thread : threads) {
+        thread.join();
     }
 
-    // stores intermediate results of partially-merged threads
-    std::vector<int> partial_results(num_threads);
-    // TODO: rewrite this section!!! the logic is not logicking
-    auto TreeReduce = [&]() -> int {
-        size_t midpoint = num_threads % 2 == 0 ?
-                          num_threads / 2 :
-                          num_threads / 2 + 1;
-        size_t offset = 1;
-        size_t thread = 0;
-        while (offset <= midpoint) {
-            // merge current thread with its offset
-            int partial_result = threads[thread].join();
-            if ((thread + offset) <= num_threads) {
-                partial_result += threads[thread + offset].join();
-            }
-            partial_results[thread] = partial_result;
-
-            // TODO: utilize some synchronization mechanism to prevent
-            // future-merged threads from speeding through
-
-            offset <<= 1;
-            ++thread;
-        }
-    };
-
-    return 0;
-
-    /*
-    // run all threads
-    for (auto& t : threads) {
-        t.join();
-    }
-    */
-
-    /*
-    int result;
-    constexpr unsigned int MANY_THREADS = 100; // arbitrary value
-    if (num_threads >= MANY_THREADS)
-        // TODO: ...
-        result = 0;
-    else
-        result = std::accumulate(thread_results.begin(), thread_results.end(), 0);
-
-    return result;
-    */
+    // final result in partial beginning
+    return partial[0];
 }
