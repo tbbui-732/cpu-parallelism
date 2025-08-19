@@ -47,10 +47,15 @@ int Sum::MultiThreadedSum(
     // partial thread results are placed in partials[thread_id]
     std::vector<int> partials(num_threads, 0);
 
-    // worker function
+    // (somewhat) evenly spread out work amongst each thread
+    const size_t num_data = data.size();
+    const size_t values_per_thread = num_data / num_threads;
+    const size_t remainder = num_data % num_threads;
+
+    // worker lambda function
     auto worker = [&](const size_t thread_id) {
         // TODO: ...
-        // split work evenly
+
         // compute partial sum and store it
         // sync threads before performing reduction
         // perform tree reduction
