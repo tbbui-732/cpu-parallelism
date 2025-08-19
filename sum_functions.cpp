@@ -38,19 +38,32 @@ int Sum::MultiThreadedSum(
     const std::vector<int>& values,
     const size_t num_threads
 ) {
-    std::vector<int> partial(num_threads, 0);
-    // worker function
+    if (values.empty()) return 0;
+    if (num_threads == 0) num_threads = 1; // should have at least a single
+                                           // working thread
+    
+    num_threads = std::min(num_threads, values.size());
 
-    // create threads
+    // partial thread results are placed in partials[thread_id]
+    std::vector<int> partials(num_threads, 0);
+
+    // worker function
+    auto worker = [&](const size_t thread_id) {
+        // TODO: ...
+        // split work evenly
+        // compute partial sum and store it
+        // sync threads before performing reduction
+        // perform tree reduction
+    };
+
+    // run threads
     std::vector<std::thread> threads;
     threads.reserve(num_threads);
-    for (size_t thread_id{0}; thread_id < num_threads; ++thread_id) {
+    for (size_t thread_id{0}; thread_id < num_threads; ++thread_id)
         threads.emplace_back(worker, thread_id);
-    }
-    for (auto& thread : threads) {
+    for (auto& thread : threads)
         thread.join();
-    }
 
     // final result in partial beginning
-    return partial[0];
+    return partials[0];
 }
