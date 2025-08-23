@@ -34,10 +34,17 @@ int Sum::SequentialSum(const std::vector<int>& values) {
     return result;
 }
 
+// TODO: Sum::MultiThreadedSum is not producing the correct value; investigate
+// why
 int Sum::MultiThreadedSum(
     const std::vector<int>& values,
-    const size_t num_threads
+    size_t num_threads
 ) {
+    if (values.empty()) {
+        return 0;
+    }
+    if (num_threads == 0) num_threads = 1;
+
     // determines amount of work each thread does
     const size_t volume = values.size();
     const size_t chunk = volume / num_threads;
