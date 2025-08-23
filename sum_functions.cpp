@@ -9,6 +9,7 @@
 #include <sstream>
 #include <thread>
 #include <numeric>
+#include <barrier>
 
 std::vector<int> Sum::SourceToVec(const std::string& source) {
     std::vector<int> result;
@@ -25,7 +26,7 @@ std::vector<int> Sum::SourceToVec(const std::string& source) {
     return result;
 }
 
-int Sum::SequentialSum(const std::vector<int> values) {
+int Sum::SequentialSum(const std::vector<int>& values) {
     int result = 0;
     for (const int value : values) {
         result += value;
@@ -33,43 +34,61 @@ int Sum::SequentialSum(const std::vector<int> values) {
     return result;
 }
 
+// TODO: Sum::MultiThreadedSum is not producing the correct value; investigate
+// why
 int Sum::MultiThreadedSum(
     const std::vector<int>& values,
-    const size_t thread_count
+    size_t num_threads
 ) {
-    const int width = values.size() / thread_count;
-    std::vector<int> thread_results(thread_count, 0);
+    if (values.empty()) {
+        return 0;
+    }
+    if (num_threads == 0) num_threads = 1;
 
-    // range based lambda sum function that updates @thread_results
-    auto ThreadSum = [&](size_t start, size_t end, size_t thread) -> void {
-        int result = 0;
-        for (size_t i{start}; i < end; ++i)
-            result += values[i];
-        // placing at a specific @thread ensures thread-safety
-        thread_results[thread] = result;
+    // determines amount of work each thread does
+    const size_t volume = values.size();
+    const size_t chunk = volume / num_threads;
+
+    // each worker-thread sums a "chunk" of values
+    // and places the partial result in partials[thread_id]
+    std::vector<int> partials(num_threads, 0);
+    std::barrier sync_point(static_cast<std::ptrdiff_t>(num_threads));
+
+    auto ThreadSum = [&](const size_t thread_id) {
+        size_t start = thread_id * chunk;
+        size_t end = start + chunk;
+        if (thread_id == num_threads - 1) {
+            // last thread *might* do more work...
+            end += (volume % num_threads);
+        }
+        int partial = 0;
+        for (size_t i = 0; i < end; ++i) {
+            partial += values[i];
+        }
+        partials[thread_id] = partial;
+
+        // threads in reduction-tree must work on the same level!!!
+        sync_point.arrive_and_wait();
+
+        // tree-reduction algorithm
+        // sums up the "partner" of the current thread
+        for (size_t offset = 1; offset < num_threads; offset <<= 1) {
+            // determines if current thread has a partner
+            if ((thread_id % (2 * offset) == 0)) {
+                size_t partner = thread_id + offset;
+                if (partner < num_threads) {
+                    partials[thread_id] += partials[partner];
+                }
+            }
+            sync_point.arrive_and_wait();
+        }
     };
 
-    // create @thread_count number of threads
+    // create and run threads
     std::vector<std::thread> threads;
-    threads.reserve(thread_count);
-
-    for (size_t thread = 0; thread < thread_count; ++thread) {
-        size_t start = width * thread;
-        size_t end = (thread == thread_count - 1) ?
-                        values.size() : (width * thread) + width;
-        threads.emplace_back(ThreadSum, start, end, thread);
+    for (size_t thread_id = 0; thread_id < num_threads; ++thread_id) {
+        threads.emplace_back(ThreadSum, thread_id);
     }
-
-    // run all threads
-    for (auto& t : threads) t.join();
-
-    int result;
-    constexpr unsigned int MANY_THREADS = 100; // arbitrary value
-    if (thread_count >= MANY_THREADS)
-        // TODO: perform tree-reduction
-        result = 0;
-    else
-        result = std::accumulate(thread_results.begin(), thread_results.end(), 0);
-
-    return result;
+    for (auto& th : threads) th.join();
+    return partials[0];
 }
