@@ -45,13 +45,13 @@ int main() {
         << " milliseconds\n";
 
     std::cout 
-        << "SequentialSum() took "
-        << std::chrono::duration_cast<std::chrono::milliseconds>(seqTime).count()
+        << "SequentialSum() ran in "
+        << std::chrono::duration_cast<milliseconds>(seqTime).count()
         << " milliseconds\n";
 
     std::cout 
-        << "MultiThreadedSum() took "
-        << std::chrono::duration_cast<std::chrono::milliseconds>(multTime).count()
+        << "MultiThreadedSum() ran in "
+        << std::chrono::duration_cast<milliseconds>(multTime).count()
         << " milliseconds\n";
 
     /*
