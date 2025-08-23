@@ -9,7 +9,7 @@
 class Sum {
 public:
     static int SequentialSum(
-        const std::vector<int> values
+        const std::vector<int>& values
     );
 
     static int MultiThreadedSum(
