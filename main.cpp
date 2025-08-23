@@ -2,6 +2,8 @@
 #include <iostream>
 #include <random>
 #include <string>
+#include <thread>
+#include <cstdint>
 
 #include "sum_functions.h"
 #include "test_sum_functions.h"
@@ -16,7 +18,7 @@ int main() {
     Test::SourceToVec();
 
     /* performance analysis */
-    constexpr size_t num_threads = 5;
+    const unsigned int num_threads = std::thread::hardware_concurrency();
 
     auto t1 = std::chrono::high_resolution_clock::now();
     int seqSumTotal = Sum::SequentialSum(values);
