@@ -30,7 +30,19 @@ int main() {
     t2 = std::chrono::high_resolution_clock::now();
     auto multTime = t2 - t1;
 
+    t1 = std::chrono::high_resolution_clock::now();
+    std::int64_t sample = std::accumulate(values.begin(), values.end(), 0);
+    t2 = std::chrono::high_resolution_clock::now();
+    auto accumTime = t2 - t1;
+
+    assert(seqSumTotal == sample); // tested against a standard function
     assert(seqSumTotal == multThreadTotal);
+
+    namespace milliseconds = std::chrono::milliseconds;
+    std::cout 
+        << "std::accumulate() ran in "
+        << std::chrono::duration_cast<milliseconds>(accumTime).count()
+        << " milliseconds\n";
 
     std::cout 
         << "SequentialSum() took "
