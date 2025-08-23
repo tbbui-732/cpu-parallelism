@@ -23,29 +23,35 @@ public:
         std::minstd_rand0 rand(seed);
         wrap = 1u << 9;
         lines = 1u << 22; // over 4mil
-        filepath = "test/arr.txt";
+        directory = "test/";
+        file = "arr.txt";
+        if (!fs::exists(directory)) {
+            fs::create_directory(directory);
+        }
         GenerateContent();
     }
-
-    static inline unsigned int GetSeed() { return seed; }
-    static inline unsigned int GetWrap() { return wrap; }
-    static inline size_t GetLines() { return lines; }
-    static inline std::string GetFilePath() { return filepath; }
+    static inline size_t GetLines() {
+        return lines;
+    }
+    static inline std::string GetFilePath() {
+        return (directory.string() + file);
+    }
 private:
     /*
      * @brief generates a list of random numbers and stores them at
-     * a specified file path
+     * the specified file directory
      */
     static inline unsigned int seed;
     static inline unsigned int wrap;
     static inline size_t lines;
-    static inline std::string filepath;
+    static inline fs::path directory;
+    static inline std::string file;
 
     static inline void GenerateContent() {
-        std::minstd_rand0 rand(seed);
-        std::ofstream outfile(filepath);
+        const std::string completePath = directory.string() + file;
+        std::ofstream outfile(completePath, std::ofstream::out);
         if (!outfile.is_open()) {
-            std::cout << "unable to open '" << filepath << "'\n";
+            std::cout << "unable to open '" << completePath << "'\n";
             return;
         }
         for (size_t i{0}; i < lines; ++i) {
