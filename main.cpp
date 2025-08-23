@@ -21,12 +21,12 @@ int main() {
     const unsigned int num_threads = std::thread::hardware_concurrency();
 
     auto t1 = std::chrono::high_resolution_clock::now();
-    int seqSumTotal = Sum::SequentialSum(values);
+    std::int64_t seqSumTotal = Sum::SequentialSum(values);
     auto t2 = std::chrono::high_resolution_clock::now();
     auto seqTime = t2 - t1;
 
     t1 = std::chrono::high_resolution_clock::now();
-    int multThreadTotal = Sum::MultiThreadedSum(values, num_threads);
+    std::int64_t multThreadTotal = Sum::MultiThreadedSum(values, num_threads);
     t2 = std::chrono::high_resolution_clock::now();
     auto multTime = t2 - t1;
 
