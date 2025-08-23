@@ -39,17 +39,17 @@ int main() {
     assert(seqSumTotal == multThreadTotal);
 
     namespace milliseconds = std::chrono::milliseconds;
-    std::cout 
+    std::cout
         << "std::accumulate() ran in "
         << std::chrono::duration_cast<milliseconds>(accumTime).count()
         << " milliseconds\n";
 
-    std::cout 
+    std::cout
         << "SequentialSum() ran in "
         << std::chrono::duration_cast<milliseconds>(seqTime).count()
         << " milliseconds\n";
 
-    std::cout 
+    std::cout
         << "MultiThreadedSum() ran in "
         << std::chrono::duration_cast<milliseconds>(multTime).count()
         << " milliseconds\n";
