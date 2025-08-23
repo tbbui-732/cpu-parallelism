@@ -83,14 +83,12 @@ int Sum::MultiThreadedSum(
             sync_point.arrive_and_wait();
         }
     };
-    
+
     // create and run threads
     std::vector<std::thread> threads;
     for (size_t thread_id = 0; thread_id < num_threads; ++thread_id) {
         threads.emplace_back(ThreadSum, thread_id);
     }
-    for (auto& th : threads) {
-        th.join();
-    }
+    for (auto& th : threads) th.join();
     return partials[0];
 }
