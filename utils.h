@@ -20,7 +20,8 @@ public:
         seed = static_cast<unsigned int>(
             std::chrono::system_clock::now().time_since_epoch().count()
         );
-        wrap = 1u << 15;
+        std::minstd_rand0 rand(seed);
+        wrap = 1u << 9;
         lines = 1u << 22; // over 4mil
         filepath = "test/arr.txt";
         GenerateContent();
