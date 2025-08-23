@@ -26,7 +26,7 @@ std::vector<int> Sum::SourceToVec(const std::string& source) {
     return result;
 }
 
-int Sum::SequentialSum(const std::vector<int> values) {
+int Sum::SequentialSum(const std::vector<int>& values) {
     int result = 0;
     for (const int value : values) {
         result += value;
