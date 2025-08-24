@@ -1,6 +1,7 @@
 #ifndef SUM_FUNCTIONS_H
 #define SUM_FUNCTIONS_H
 
+#include <cstdint>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -8,11 +9,11 @@
 
 class Sum {
 public:
-    static int SequentialSum(
+    static std::int64_t SequentialSum(
         const std::vector<int>& values
     );
 
-    static int MultiThreadedSum(
+    static std::int64_t MultiThreadedSum(
         const std::vector<int>& values,
         size_t thread_count
     );
