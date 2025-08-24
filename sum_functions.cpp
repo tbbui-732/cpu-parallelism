@@ -10,6 +10,7 @@
 #include <thread>
 #include <numeric>
 #include <barrier>
+#include <cstdint>
 
 std::vector<int> Sum::SourceToVec(const std::string& source) {
     std::vector<int> result;
@@ -26,7 +27,7 @@ std::vector<int> Sum::SourceToVec(const std::string& source) {
     return result;
 }
 
-int Sum::SequentialSum(const std::vector<int>& values) {
+std::int64_t Sum::SequentialSum(const std::vector<int>& values) {
     int result = 0;
     for (const int value : values) {
         result += value;
@@ -34,24 +35,23 @@ int Sum::SequentialSum(const std::vector<int>& values) {
     return result;
 }
 
-// TODO: Sum::MultiThreadedSum is not producing the correct value; investigate
-// why
-int Sum::MultiThreadedSum(
+std::int64_t Sum::MultiThreadedSum(
     const std::vector<int>& values,
     size_t num_threads
 ) {
-    if (values.empty()) {
+    if (values.empty())
         return 0;
-    }
-    if (num_threads == 0) num_threads = 1;
+    if (num_threads == 0)
+        num_threads = 1;
+    num_threads = std::min(num_threads, values.size());
 
     // determines amount of work each thread does
     const size_t volume = values.size();
     const size_t chunk = volume / num_threads;
 
     // each worker-thread sums a "chunk" of values
-    // and places the partial result in partials[thread_id]
-    std::vector<int> partials(num_threads, 0);
+    // and places the partial result into partials[thread_id]
+    std::vector<std::int64_t> partials(num_threads, 0);
     std::barrier sync_point(static_cast<std::ptrdiff_t>(num_threads));
 
     auto ThreadSum = [&](const size_t thread_id) {
@@ -59,10 +59,10 @@ int Sum::MultiThreadedSum(
         size_t end = start + chunk;
         if (thread_id == num_threads - 1) {
             // last thread *might* do more work...
-            end += (volume % num_threads);
+            end = volume;
         }
         int partial = 0;
-        for (size_t i = 0; i < end; ++i) {
+        for (size_t i = start; i < end; ++i) {
             partial += values[i];
         }
         partials[thread_id] = partial;
@@ -80,6 +80,7 @@ int Sum::MultiThreadedSum(
                     partials[thread_id] += partials[partner];
                 }
             }
+            // wait for this level to finish
             sync_point.arrive_and_wait();
         }
     };
