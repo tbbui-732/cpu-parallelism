@@ -1,4 +1,4 @@
-#include "sum_functions.h"
+#include "sum.h"
 
 #include <iostream>
 #include <string>
