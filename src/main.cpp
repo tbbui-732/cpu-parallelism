@@ -5,8 +5,8 @@
 #include <thread>
 #include <cstdint>
 
-#include "sum_functions.h"
-#include "test_sum_functions.h"
+#include "sum.h"
+#include "test_sum.h"
 #include "utils.h"
 
 int main() {

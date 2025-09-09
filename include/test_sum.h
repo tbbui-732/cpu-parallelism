@@ -13,7 +13,7 @@
 #include <fstream>
 #include <string>
 
-#include "sum_functions.h"
+#include "sum.h"
 #include "utils.h"
 
 class Test {
