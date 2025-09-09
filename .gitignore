@@ -1,3 +1,5 @@
 *.swp
 main
-test/arr.txt
+src/test
+src/bin
+src/obj
