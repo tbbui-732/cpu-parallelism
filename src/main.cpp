@@ -8,6 +8,7 @@
 #include "sum.h"
 #include "test_sum.h"
 #include "utils.h"
+#include "analysis.h"
 
 int main() {
     /* set up */
@@ -54,12 +55,8 @@ int main() {
         << std::chrono::duration_cast<time::milliseconds>(multTime).count()
         << " milliseconds\n";
 
-    /*
-     * Uncomment to see values.
-     * NOTE: expect wrapping due to very large values
-    std::cout << "total (sequential) - " << seqSumTotal << '\n';
-    std::cout << "total (multithreaded) - " << multThreadTotal << '\n';
-    */
+    std::cout << "\nTesting a varying number of threads\n";
+    Analysis::VaryingNumberOfThreads();
 
     return 0;
 }
