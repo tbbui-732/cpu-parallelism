@@ -8,6 +8,5 @@
 - Experiment with different number of threads
 - Vary container size
 - Measure CPU utilization
-- std::reduce with std::execution::par (parallel stdlib comparison)
 - Measure thread setup time
 - Plot all of this with python + matplotlib
